@@ -1,0 +1,27 @@
+site_name: covid-responder-lex-bot
+theme:
+  name: material
+  features:
+    - tabs
+  language: en
+  palette:
+    primary: red
+    accent: red
+repo_name: c17hawke/covid-responder-lex-bot
+repo_url: https://github.com/c17hawke/covid-responder-lex-bot
+extra:
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/c17hawke
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/c17hawke
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/c17hawke
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
+markdown_extensions:
+  - codehilite
+  - admonition
+  - pymdownx.arithmatex
+  - footnotes
