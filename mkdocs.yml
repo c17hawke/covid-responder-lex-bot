@@ -1,4 +1,15 @@
+# Project information
 site_name: covid-responder-lex-bot
+site_url: https://github.com/c17hawke/covid-responder-lex-bot/
+site_author: Sunny Bhaveen Chandra
+site_description: >-
+  it shocases end to end tutorial for Amazon Lex bot
+
+# Repository
+repo_name: c17hawke/covid-responder-lex-bot
+repo_url: https://github.com/c17hawke/covid-responder-lex-bot/
+
+# Configuration
 theme:
   name: material
   features:
@@ -7,8 +18,7 @@ theme:
   palette:
     primary: red
     accent: red
-repo_name: c17hawke/covid-responder-lex-bot
-repo_url: https://github.com/c17hawke/covid-responder-lex-bot
+
 extra:
   social:
     - icon: fontawesome/brands/github-alt
