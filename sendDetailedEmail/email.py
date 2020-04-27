@@ -1,3 +1,9 @@
+'''
+# Author: Sunny Bhaveen Chandra
+# Contact: sunny.c17hawke@gmail.com
+# dated: April, 23, 2020
+'''
+
 # import neccessary libs and modules
 import smtplib
 import os
