@@ -2,6 +2,7 @@
 This is covid responder lex-bot made with AWS Amazon lex
 
 ---
+
 #### Check detailed documentation and demo videos by clicking on the below pic-
 
 <p style="text-align: center;">
@@ -9,4 +10,5 @@ This is covid responder lex-bot made with AWS Amazon lex
 <img style="max-width: 80%; border-radius:8px;" src="https://github.com/c17hawke/testRepo_forblog/blob/master/Screenshot%20from%202020-04-23%2021-36-52.png?raw=true">
 </img></a>
 </p>
+
 ---
