@@ -1,6 +1,6 @@
 # Project information
 site_name: covid-responder-lex-bot
-site_url: https://github.com/c17hawke/covid-responder-lex-bot/
+# site_url: https://github.com/c17hawke/covid-responder-lex-bot/
 site_author: Sunny Bhaveen Chandra
 site_description: >-
   it shocases end to end tutorial for Amazon Lex bot
@@ -35,3 +35,8 @@ markdown_extensions:
   - admonition
   - pymdownx.arithmatex
   - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+
+copyright: |
+  &copy; 2020 <a href="https://github.com/c17hawke"  target="_blank" rel="noopener">Sunny Bhaveen Chandra</a>
