@@ -371,7 +371,7 @@
         
           <li class="md-nav__item">
   <a href="#to-save-logs-" class="md-nav__link">
-    to save logs -
+    To save logs -
   </a>
   
 </li>
@@ -533,7 +533,7 @@
         
           <li class="md-nav__item">
   <a href="#to-save-logs-" class="md-nav__link">
-    to save logs -
+    To save logs -
   </a>
   
 </li>
@@ -585,7 +585,7 @@
                 
                 
                 <h1 id="flask-app">Flask App</h1>
-<p>Here's our layout for present project. [FOLDER] repersents Folder for us and rest are files (ie .py, .html. .ini .txt. pdf) </p>
+<p>Here's the layout for present project. [FOLDER] repersents folder and rest are files can be identified by their extensions(ie .py, .html. .ini .txt. pdf) </p>
 <h2 id="project-layout">Project layout</h2>
 <div class="codehilite"><pre><span></span><code><span class="err">├──</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">py</span><span class="w"> </span>
 <span class="err">├──</span><span class="w"> </span><span class="o">[</span><span class="n">covidInfo</span><span class="o">]</span><span class="w"></span>
@@ -608,49 +608,307 @@
 <p>Click on the top right corner to see the full codes. Folowing are the glimpse of the main portion of the code -</p>
 <h2 id="inside-apppy-we-have-severals-webhooks-">inside app.py we have severals webhooks -</h2>
 <h4 id="this-one-to-get-world-data-">this one to get world data -</h4>
-<div class="codehilite"><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/covidWorld&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<details class="note"><summary>world wise</summary><div class="highlight"><pre><span></span><code><span class="c1"># route to get covid data wrt World. It follows same flow as PIN</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/covidWorld&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@cross_origin</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">covidWorld</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">dataRequest</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">dataRequest</span><span class="p">)</span>
+        <span class="n">country</span> <span class="o">=</span> <span class="n">dataRequest</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">]</span>
+        <span class="n">covid</span> <span class="o">=</span> <span class="n">Covid</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">covid</span><span class="o">.</span><span class="n">get_status_by_country_name</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fullFilmenttext&quot;</span><span class="p">:</span><span class="n">result</span><span class="p">}</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;bot&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fullFilmenttext&quot;</span><span class="p">:</span><span class="sa">f</span><span class="s2">&quot;process failed due to Error:</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;bot&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
 </code></pre></div>
 
-
+</details>
 <h4 id="to-get-pincode-wise-data-">To get pincode wise data -</h4>
-<div class="codehilite"><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/covidInfo&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<details class="note"><summary>pincode</summary><div class="highlight"><pre><span></span><code><span class="c1"># route to get covid data PIN code wise</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/covidInfo&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
 <span class="nd">@cross_origin</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">covidInfo</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># get user&#39;s request details</span>
+        <span class="n">dataRequest</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+        <span class="c1"># log the details in the db</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">dataRequest</span><span class="p">)</span>
+
+        <span class="c1"># send details to the user as per PIN and State</span>
+
+        <span class="c1"># if keys contains PIN</span>
+        <span class="k">if</span> <span class="s2">&quot;PIN&quot;</span> <span class="ow">in</span> <span class="n">dataRequest</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># get details wrt PIN</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">CovidCasesIndia</span><span class="p">(</span><span class="n">PIN</span><span class="o">=</span><span class="n">dataRequest</span><span class="p">[</span><span class="s2">&quot;PIN&quot;</span><span class="p">])</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;state&quot;</span> <span class="ow">in</span> <span class="n">dataRequest</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># get detila wrt state</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">CovidCasesIndia</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">dataRequest</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">])</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="c1"># record response in dict format and return</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fullFilmenttext&quot;</span><span class="p">:</span><span class="n">result</span><span class="p">}</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;bot&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># in case of failure save error log and send the response with error msg</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fullFilmenttext&quot;</span><span class="p">:</span><span class="sa">f</span><span class="s2">&quot;process failed due to Error:</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;bot&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
 </code></pre></div>
 
-
+</details>
 <h4 id="to-send-the-mail-following-webhook-is-used-">To send the mail following webhook is used -</h4>
-<div class="codehilite"><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/sendMail&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<details class="note"><summary>sendMail</summary><div class="highlight"><pre><span></span><code><span class="c1"># route to save sendmail</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/sendMail&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
 <span class="nd">@cross_origin</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">sendMail</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># get client info</span>
+        <span class="n">clientInfo</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+        <span class="c1"># log the details in the db</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">clientInfo</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+
+        <span class="c1"># get user&#39;s email to send the FAQ</span>
+        <span class="n">clientEmail</span> <span class="o">=</span> <span class="n">clientInfo</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span>
+        <span class="n">clientName</span> <span class="o">=</span> <span class="n">clientInfo</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">clientPhone</span> <span class="o">=</span> <span class="n">clientInfo</span><span class="p">[</span><span class="s1">&#39;phone&#39;</span><span class="p">]</span>
+
+        <span class="c1"># send mail to the user </span>
+        <span class="c1"># d is a temp var can be used for debuging </span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">MailAttachment</span><span class="p">(</span><span class="n">clientEmail</span><span class="o">=</span><span class="n">clientEmail</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+        <span class="c1"># save the response in dictionary</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fullFilmenttext&quot;</span><span class="p">:</span><span class="sa">f</span><span class="s2">&quot;mail sent to </span><span class="si">{</span><span class="n">clientEmail</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="c1"># save the response in the db and return response</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;bot&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># in case of failure save error log and send the response with error msg</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fullFilmenttext&quot;</span><span class="p">:</span><span class="sa">f</span><span class="s2">&quot;process failed due to Error:</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="n">logDetails</span><span class="p">(</span><span class="n">whoAmI</span><span class="o">=</span><span class="s2">&quot;bot&quot;</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
 </code></pre></div>
 
-
+</details>
 <h2 id="following-are-the-supporting-modules-for-apppy">Following are the supporting modules for app.py</h2>
-<h3 id="to-save-logs-">to save logs -</h3>
-<div class="codehilite"><pre><span></span><code><span class="err">Check saveLog.py</span>
+<h3 id="to-save-logs-">To save logs -</h3>
+<details class="note"><summary>saveLogs.py</summary><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<span class="k">class</span> <span class="nc">Log</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    It logs the data into cloud.mongodb.com</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbName</span><span class="o">=</span><span class="s2">&quot;responder_googledb&quot;</span><span class="p">,</span> <span class="n">MAX_RECORDS</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">dbPASSWORD</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MAX_RECORDS</span> <span class="o">=</span> <span class="n">MAX_RECORDS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbName</span> <span class="o">=</span> <span class="n">dbName</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbPASSWORD</span> <span class="o">=</span> <span class="n">dbPASSWORD</span>
+
+        <span class="c1"># connection string is optained fromt the mongodb cloud</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connectionString</span><span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;mongodb+srv://responder_google01:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dbPASSWORD</span><span class="si">}</span><span class="s2">@cluster0-cjxui.mongodb.net/test?retryWrites=true&amp;w=majority&quot;</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectionString</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">insertLog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enterLog</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Method to insert logs into the cloud mongodb&#39;&#39;&#39;</span>
+        <span class="c1"># get the db</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbName</span><span class="p">)</span>
+
+        <span class="c1"># get the records in which you wish to log data</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">responder_google01</span>
+
+        <span class="c1"># only enter into records if it hasn&#39;t reached the max_records</span>
+        <span class="c1"># max_records=100 by default</span>
+        <span class="k">if</span> <span class="n">records</span><span class="o">.</span><span class="n">count_documents</span><span class="p">({})</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_RECORDS</span><span class="p">:</span>
+            <span class="c1"># get current date and time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">|%H:%M:%S&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connectionString</span><span class="p">)</span>
+
+            <span class="c1"># save log, date, and time into a new record var</span>
+            <span class="n">new_record</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;date&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+                        <span class="s2">&quot;time&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                        <span class="s2">&quot;log&quot;</span><span class="p">:</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">enterLog</span><span class="p">)}</span> <span class="c1"># had to jsonify</span>
+            <span class="c1"># insert the new record and return the success msg       </span>
+            <span class="n">records</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">new_record</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;Logged Successfully&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;MAX records reached. Delete previous records&quot;</span>
 </code></pre></div>
 
-
+</details>
 <h3 id="to-send-mail">To send mail</h3>
-<div class="codehilite"><pre><span></span><code><span class="err">Check email.py</span>
+<details class="note"><summary>email.py</summary><div class="highlight"><pre><span></span><code><span class="c1"># import neccessary libs and modules</span>
+<span class="kn">import</span> <span class="nn">smtplib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">email.message</span> <span class="kn">import</span> <span class="n">EmailMessage</span>
+<span class="kn">from</span> <span class="nn">getCredentials.read</span> <span class="kn">import</span> <span class="n">ConfigReader</span>
+
+
+<span class="c1"># define paths for attchments and HTML tempplate to send</span>
+<span class="n">CURRFOLDER</span><span class="o">=</span><span class="s2">&quot;sendDetailedEmail&quot;</span>
+<span class="c1"># HTML_TEMPLATE_NAME = &quot;DLM_Template.html&quot;</span>
+<span class="n">HTML_TEMPLATE_NAME</span> <span class="o">=</span> <span class="s2">&quot;Template_corona_info.html&quot;</span>
+<span class="n">HTML_TEMPLATE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CURRFOLDER</span><span class="p">,</span> <span class="n">HTML_TEMPLATE_NAME</span><span class="p">)</span>
+
+<span class="c1"># get the auth keys to send the mail</span>
+<span class="n">AUTH_DATA</span> <span class="o">=</span> <span class="n">ConfigReader</span><span class="p">()</span>
+<span class="n">eMAIL</span> <span class="o">=</span> <span class="n">AUTH_DATA</span><span class="o">.</span><span class="n">read_config</span><span class="p">()[</span><span class="s2">&quot;eMAILsender&quot;</span><span class="p">]</span>
+<span class="n">ePASSKEY</span> <span class="o">=</span> <span class="n">AUTH_DATA</span><span class="o">.</span><span class="n">read_config</span><span class="p">()[</span><span class="s2">&quot;ePASSKEY&quot;</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">MailAttachment</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This class sends mail to the client by attaching necessary attachment</span>
+<span class="sd">    It attaches an HTML template as well.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clientEmail</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clientEmail</span> <span class="o">=</span> <span class="n">clientEmail</span>
+
+    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># put the Subject, From and To data for email</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">()</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;Subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Detailed Information about Covid-19&quot;</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;From&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eMAIL</span>
+        <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;To&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clientEmail</span>
+
+        <span class="c1"># add the text content which is shown if HTML is off at the client</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">set_content</span><span class="p">(</span><span class="s1">&#39;Hi,</span><span class="se">\n\t</span><span class="s1">Please find the attachment below. </span><span class="se">\n</span><span class="s1">Regards,</span><span class="se">\n</span><span class="s1">Sunny&#39;</span><span class="p">)</span>
+        <span class="c1"># attach the HTML content</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">HTML_TEMPLATE_PATH</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">html_content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="n">msg</span><span class="o">.</span><span class="n">add_alternative</span><span class="p">(</span><span class="n">html_content</span><span class="p">,</span> <span class="n">subtype</span><span class="o">=</span><span class="s1">&#39;html&#39;</span><span class="p">)</span>
+
+        <span class="c1"># adding other attachements</span>
+        <span class="n">pdf_files</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FAQ1.pdf&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">pdf_files</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CURRFOLDER</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">file_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">file_name</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">msg</span><span class="o">.</span><span class="n">add_attachment</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">maintype</span><span class="o">=</span><span class="s1">&#39;application&#39;</span><span class="p">,</span> 
+            <span class="n">subtype</span><span class="o">=</span><span class="s1">&#39;octet-stream&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span>
+
+        <span class="c1"># login with the auth keys and send the email</span>
+        <span class="k">with</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP_SSL</span><span class="p">(</span><span class="s1">&#39;smtp.gmail.com&#39;</span><span class="p">,</span> <span class="mi">465</span><span class="p">)</span> <span class="k">as</span> <span class="n">smtp</span><span class="p">:</span>
+            <span class="n">smtp</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">eMAIL</span><span class="p">,</span> <span class="n">ePASSKEY</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sending email...&quot;</span><span class="p">)</span>
+            <span class="n">smtp</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;email Sent&quot;</span><span class="p">)</span>
 </code></pre></div>
 
-
+</details>
 <h3 id="to-get-credentials">To get credentials</h3>
-<div class="codehilite"><pre><span></span><code><span class="err">Check read.py</span>
+<details class="note"><summary>read.py</summary><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># get the path of config file </span>
+<span class="n">CURRENT_FOLDER</span> <span class="o">=</span> <span class="s2">&quot;getCredentials&quot;</span>
+<span class="n">CONFIG_FILE</span> <span class="o">=</span> <span class="s2">&quot;config.ini&quot;</span>
+<span class="n">CONFIG_FILE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CURRENT_FOLDER</span><span class="p">,</span> <span class="n">CONFIG_FILE</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">ConfigReader</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    It read the following from the config file-</span>
+<span class="sd">    1. senders email</span>
+<span class="sd">    3. login keys of sender&#39;s email</span>
+<span class="sd">    3. passwords for the database</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configFileName</span> <span class="o">=</span> <span class="n">CONFIG_FILE_PATH</span>
+
+    <span class="k">def</span> <span class="nf">read_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;reads the congfig file to get details&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configFileName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">]</span>
+        <span class="c1"># extract the secret info from the config file and return the info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eMAILsender</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="p">[</span><span class="s2">&quot;eMAILsender&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ePASSKEY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="p">[</span><span class="s2">&quot;ePASSKEY&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbPASSWORD</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span><span class="p">[</span><span class="s1">&#39;dbPASSWORD&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span>
 </code></pre></div>
 
-
+</details>
 <h3 id="to-covid-data-">To covid data -</h3>
-<div class="codehilite"><pre><span></span><code><span class="err">Check covidData.py</span>
+<details class="note"><summary>covidData.py</summary><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># get path of PINCODE csv file</span>
+<span class="n">UTILS</span> <span class="o">=</span> <span class="s2">&quot;covidInfo&quot;</span>
+<span class="n">PINCODE_DATA_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">UTILS</span><span class="p">,</span> <span class="s2">&quot;pinCodeData.csv&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">CovidCasesIndia</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This serves you with State and PINCODE wise data.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PIN</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">df_path</span> <span class="o">=</span> <span class="n">PINCODE_DATA_PATH</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PIN</span> <span class="o">=</span> <span class="n">PIN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="c1"># read csv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">df_path</span><span class="p">)</span>
+        <span class="c1"># APIs to get state and district wise covid data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stateAPI</span> <span class="o">=</span> <span class="s2">&quot;https://api.rootnet.in/covid19-in/stats/latest&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_districtAPI</span> <span class="o">=</span> <span class="s2">&quot;https://api.covid19india.org/state_district_wise.json&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;gets data wrt to PIN or state&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">PIN</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;district&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_data_fromPIN</span><span class="p">(),</span> <span class="s2">&quot;state&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_data_fromSTATE</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_data_fromSTATE</span><span class="p">()}</span>
+
+    <span class="k">def</span> <span class="nf">_get_district_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">district</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;gets districts wise data&#39;&#39;&#39;</span>
+        <span class="c1"># read json paypload from district API</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_districtAPI</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="c1"># extract district data and return the result</span>
+        <span class="n">d_data</span> <span class="o">=</span> <span class="n">json_data</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="s2">&quot;districtData&quot;</span><span class="p">][</span><span class="n">district</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">d_data</span>
+
+    <span class="k">def</span> <span class="nf">_get_data_fromPIN</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;get PIN wise data&#39;&#39;&#39;</span>
+        <span class="k">def</span> <span class="nf">query_pincode</span><span class="p">(</span><span class="n">PIN</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;gets state and district name from csv by using PINCODE provided&#39;&#39;&#39;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># check if PIN is valid</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">PIN</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Pincode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="n">PIN</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()):</span> <span class="c1"># already_read</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">PIN</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Pincode&#39;</span><span class="p">]</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+                    <span class="k">return</span> <span class="n">result</span>
+                <span class="k">return</span> <span class="s2">&quot;Invalid PIN code or data is not availble&quot;</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query_pincode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PIN</span><span class="p">)</span>
+        <span class="c1"># extract state and distt. name from query</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">State</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dist</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">District</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># return this if data of distt is present</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;district&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="p">,</span> <span class="s2">&quot;confirmed&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_district_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="p">)[</span><span class="s1">&#39;confirmed&#39;</span><span class="p">]}</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c1"># return this if data is not found from the requested API</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;district&quot;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dist</span><span class="p">,</span> <span class="s2">&quot;confirmed&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_get_data_fromSTATE</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;gets data state wise from the API&#39;&#39;&#39;</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stateAPI</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">query_state_wise</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">json_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;regional&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">loc</span><span class="p">[</span><span class="s1">&#39;loc&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">query</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">loc</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">query_state_wise</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
 </code></pre></div>
+
+</details>
                 
               
               
@@ -704,6 +962,11 @@
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            &copy; 2020 <a href="https://github.com/c17hawke"  target="_blank" rel="noopener">Sunny Bhaveen Chandra</a>
+
+          </div>
         
         Made with
         <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">

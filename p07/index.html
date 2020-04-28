@@ -541,31 +541,27 @@
 <p>Install the <a href="https://devcenter.heroku.com/articles/heroku-command-line">Heroku CLI</a>
 Download and install the Heroku CLI.</p>
 <p>If you haven't already, log in to your Heroku account and follow the prompts to create a new SSH public key.</p>
-<div class="codehilite"><pre><span></span><code>$ heroku login
+<div class="highlight"><pre><span></span><code>$ heroku login
 </code></pre></div>
-
 
 <p>Create a new Git repository
 Initialize a git repository in a new or existing directory</p>
-<div class="codehilite"><pre><span></span><code>$ <span class="nb">cd</span> my-project/
+<div class="highlight"><pre><span></span><code>$ cd my-project/
 $ git init
 $ heroku git:remote -a test-c17hawke
 </code></pre></div>
 
-
 <p>Deploy your application
 Commit your code to the repository and deploy it to Heroku using Git.</p>
-<div class="codehilite"><pre><span></span><code>$ git add .
-$ git commit -am <span class="s2">&quot;make it better&quot;</span>
+<div class="highlight"><pre><span></span><code>$ git add .
+$ git commit -am &quot;make it better&quot;
 $ git push heroku master
 </code></pre></div>
 
-
 <p>Existing Git repository
 For existing repositories, simply add the heroku remote</p>
-<div class="codehilite"><pre><span></span><code>$ heroku git:remote -a test-c17hawke
+<div class="highlight"><pre><span></span><code>$ heroku git:remote -a test-c17hawke
 </code></pre></div>
-
 
 <ol>
 <li>
@@ -648,6 +644,11 @@ For existing repositories, simply add the heroku remote</p>
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            &copy; 2020 <a href="https://github.com/c17hawke"  target="_blank" rel="noopener">Sunny Bhaveen Chandra</a>
+
+          </div>
         
         Made with
         <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
