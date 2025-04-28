@@ -17,7 +17,7 @@ from loggingdb.saveLog import Log
 # get required autherization 
 AUTH_DATA = ConfigReader()
 dbPASSWORD = AUTH_DATA.read_config()["dbPASSWORD"]
-
+clusterName = AUTH_DATA.read_config()["clusterName"]
 app = Flask(__name__)
 
 class ProcessingReq:
@@ -38,7 +38,7 @@ class ProcessingReq:
         Max records to be saved in the db is set to 1000 by default
         This can be changed if space is not an issue.
         '''
-        log = Log(MAX_RECORDS=MAX_REC, dbPASSWORD=self.dbPWD)
+        log = Log(MAX_RECORDS=MAX_REC, dbPASSWORD=self.dbPWD, clusterName=clusterName)
         log.insertLog(enterLog=query)
         return "Logging successfull"
 

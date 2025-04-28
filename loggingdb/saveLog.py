@@ -13,13 +13,14 @@ class Log:
     '''
     It logs the data into cloud.mongodb.com
     '''
-    def __init__(self, dbName="responder_googledb", MAX_RECORDS=100, dbPASSWORD=None):
+    def __init__(self, dbName="responder_googledb", MAX_RECORDS=100, dbPASSWORD=None, clusterName=None):
         self.MAX_RECORDS = MAX_RECORDS
         self.dbName = dbName
         self.dbPASSWORD = dbPASSWORD
+        self.clusterName = clusterName
         
         # connection string is optained fromt the mongodb cloud
-        self.connectionString= f"mongodb+srv://responder_google01:{self.dbPASSWORD}@cluster0-cjxui.mongodb.net/test?retryWrites=true&w=majority"        
+        self.connectionString= f"mongodb+srv://responder_google01:{self.dbPASSWORD}@{self.clusterName}.mongodb.net/test?retryWrites=true&w=majority"        
         self.client = MongoClient(self.connectionString)
         
     def insertLog(self, enterLog=None):
